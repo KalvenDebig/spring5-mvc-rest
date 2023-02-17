@@ -1,4 +1,4 @@
-package kalven.springframework;
+package kalven.springframework.spring5mvcrest;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
