@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  * @Author kalvens on 2/17/23
  */
 @Controller
-@RequestMapping("/api/v1/customers/")
+@RequestMapping("/api/v1/customers")
 public class CustomerController {
     private final CustomerService customerService;
 
@@ -26,7 +26,7 @@ public class CustomerController {
         return new ResponseEntity<>(new CustomerListDTO(customerService.getAllCustomers()), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping({"/{id}"})
     public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Long id) {
         return new ResponseEntity<>(customerService.getCustomerById(id), HttpStatus.OK);
     }
