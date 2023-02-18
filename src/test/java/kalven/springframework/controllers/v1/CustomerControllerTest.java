@@ -42,7 +42,7 @@ class CustomerControllerTest extends AbstractRestControllerTest {
         CustomerDTO customerDTO2 = new CustomerDTO();
         Mockito.when(customerService.getAllCustomers()).thenReturn(Arrays.asList(customerDTO1, customerDTO2));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customers/")
+        mockMvc.perform(MockMvcRequestBuilders.get(CustomerController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.customers", Matchers.hasSize(2)));
@@ -55,10 +55,10 @@ class CustomerControllerTest extends AbstractRestControllerTest {
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setFirstName("Walter");
         customerDTO.setLastName("White");
-        customerDTO.setCustomerUrl("/api/v1/customers/1");
+        customerDTO.setCustomerUrl(CustomerController.BASE_URL + "/1");
         Mockito.when(customerService.getCustomerById(ArgumentMatchers.anyLong())).thenReturn(customerDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customers/1")
+        mockMvc.perform(MockMvcRequestBuilders.get(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.equalTo("Walter")));
@@ -74,11 +74,11 @@ class CustomerControllerTest extends AbstractRestControllerTest {
         CustomerDTO savedCustomerDTO = new CustomerDTO();
         savedCustomerDTO.setLastName(customerDTO.getLastName());
         savedCustomerDTO.setFirstName(customerDTO.getFirstName());
-        savedCustomerDTO.setCustomerUrl("/api/v1/customers/1");
+        savedCustomerDTO.setCustomerUrl(CustomerController.BASE_URL + "/1");
 
         Mockito.when(customerService.createNewCustomer(customerDTO)).thenReturn(savedCustomerDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/customers/")
+        mockMvc.perform(MockMvcRequestBuilders.post(CustomerController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customerDTO)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
@@ -95,17 +95,17 @@ class CustomerControllerTest extends AbstractRestControllerTest {
         CustomerDTO returnDTO = new CustomerDTO();
         returnDTO.setFirstName(customerDTO.getFirstName());
         returnDTO.setLastName(customerDTO.getLastName());
-        returnDTO.setCustomerUrl("/api/v1/customers/1");
+        returnDTO.setCustomerUrl(CustomerController.BASE_URL + "/1");
 
         Mockito.when(customerService.saveCustomerByDTO(ArgumentMatchers.anyLong(), ArgumentMatchers.any(CustomerDTO.class))).thenReturn(returnDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/customers/1")
+        mockMvc.perform(MockMvcRequestBuilders.put(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customerDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.equalTo("Walter")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", Matchers.equalTo("White")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.customer_url", Matchers.equalTo("/api/v1/customers/1")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.customer_url", Matchers.equalTo(CustomerController.BASE_URL + "/1")));
     }
 
     @Test
@@ -116,21 +116,21 @@ class CustomerControllerTest extends AbstractRestControllerTest {
         CustomerDTO returnedCustomer = new CustomerDTO();
         returnedCustomer.setFirstName(customer.getFirstName());
         returnedCustomer.setLastName("White");
-        returnedCustomer.setCustomerUrl("/api/v1/customers/1");
+        returnedCustomer.setCustomerUrl(CustomerController.BASE_URL + "/1");
 
         Mockito.when(customerService.patchCustomer(ArgumentMatchers.anyLong(), ArgumentMatchers.any(CustomerDTO.class))).thenReturn(returnedCustomer);
 
-        mockMvc.perform(MockMvcRequestBuilders.patch("/api/v1/customers/1")
+        mockMvc.perform(MockMvcRequestBuilders.patch(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customer)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.equalTo("Walter")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", Matchers.equalTo("White")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.customer_url", Matchers.equalTo("/api/v1/customers/1")));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.customer_url", Matchers.equalTo(CustomerController.BASE_URL + "/1")));
     }
     @Test
     void deleteCustomer() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/customers/1")
+        mockMvc.perform(MockMvcRequestBuilders.delete(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
         Mockito.verify(customerService).deleteCustomer(ArgumentMatchers.anyLong());

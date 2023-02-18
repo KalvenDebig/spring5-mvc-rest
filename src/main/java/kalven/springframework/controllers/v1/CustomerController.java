@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.*;
  * @Author kalvens on 2/17/23
  */
 @Controller
-@RequestMapping("/api/v1/customers")
+@RequestMapping(CustomerController.BASE_URL)
 public class CustomerController {
+    public static final String BASE_URL = "/api/v1/customers";
     private final CustomerService customerService;
 
     public CustomerController(CustomerService customerService) {
