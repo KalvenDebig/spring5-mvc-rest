@@ -1,7 +1,9 @@
 package kalven.springframework.controllers.v1;
 
 import kalven.springframework.api.v1.model.CustomerDTO;
+import kalven.springframework.controllers.RestResponseEntityExceptionHandler;
 import kalven.springframework.services.CustomerService;
+import kalven.springframework.services.ResourceNotFoundException;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,8 @@ class CustomerControllerTest extends AbstractRestControllerTest {
     MockMvc mockMvc;
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(customerController)
+                .setControllerAdvice(new RestResponseEntityExceptionHandler()).build();
     }
 
     @Test
@@ -134,5 +137,14 @@ class CustomerControllerTest extends AbstractRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
         Mockito.verify(customerService).deleteCustomer(ArgumentMatchers.anyLong());
+    }
+
+    @Test
+    void getByIdNotFound() throws Exception {
+        Mockito.when(customerService.getCustomerById(ArgumentMatchers.anyLong())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(CustomerController.BASE_URL + "/123")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 }

@@ -1,7 +1,9 @@
 package kalven.springframework.controllers.v1;
 
 import kalven.springframework.api.v1.model.CategoryDTO;
+import kalven.springframework.controllers.RestResponseEntityExceptionHandler;
 import kalven.springframework.services.CategoryService;
+import kalven.springframework.services.ResourceNotFoundException;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +37,8 @@ class CategoryControllerTest {
     MockMvc mockMvc;
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
+                .setControllerAdvice(new RestResponseEntityExceptionHandler()).build();
     }
 
     @Test
@@ -70,5 +73,14 @@ class CategoryControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.equalTo("jim")));
+    }
+
+    @Test
+    void getByNameNotFound() throws Exception {
+        Mockito.when(categoryService.getCategoryByName(ArgumentMatchers.anyString())).thenThrow(ResourceNotFoundException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.get(CategoryController.BASE_URL + "/asdf")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 }

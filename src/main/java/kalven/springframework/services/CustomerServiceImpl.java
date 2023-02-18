@@ -36,7 +36,6 @@ public class CustomerServiceImpl implements CustomerService {
                 .collect(Collectors.toList());
     }
 
-    //todo: implement Exception Handling
     @Override
     public CustomerDTO getCustomerById(Long id) {
         return customerRepository.findById(id)
@@ -45,7 +44,7 @@ public class CustomerServiceImpl implements CustomerService {
                     customerDTO.setCustomerUrl(getCustomerUrl(customer.getId()));
                     return customerDTO;
                 })
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -87,7 +86,7 @@ public class CustomerServiceImpl implements CustomerService {
                     CustomerDTO savedCustomerDto = customerMapper.customerToCustomerDTO(customerRepository.save(customer));
                     savedCustomerDto.setCustomerUrl(getCustomerUrl(id));
                     return savedCustomerDto;
-                }).orElseThrow(RuntimeException::new);
+                }).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
