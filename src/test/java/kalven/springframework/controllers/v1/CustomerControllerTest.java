@@ -85,4 +85,26 @@ class CustomerControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.equalTo("Walter")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", Matchers.equalTo("White")));
     }
+
+    @Test
+    void saveCustomerByDTO() throws Exception {
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("Walter");
+        customerDTO.setLastName("White");
+
+        CustomerDTO returnDTO = new CustomerDTO();
+        returnDTO.setFirstName(customerDTO.getFirstName());
+        returnDTO.setLastName(customerDTO.getLastName());
+        returnDTO.setCustomerUrl("/api/v1/customers/1");
+
+        Mockito.when(customerService.saveCustomerByDTO(ArgumentMatchers.anyLong(), ArgumentMatchers.any(CustomerDTO.class))).thenReturn(returnDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customerDTO)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.equalTo("Walter")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", Matchers.equalTo("White")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.customer_url", Matchers.equalTo("/api/v1/customers/1")));
+    }
 }
