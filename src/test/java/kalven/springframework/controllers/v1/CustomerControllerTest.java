@@ -25,7 +25,7 @@ import java.util.Arrays;
  * @Author kalvens on 2/17/23
  */
 @ExtendWith(MockitoExtension.class)
-class CustomerControllerTest {
+class CustomerControllerTest extends AbstractRestControllerTest {
     @Mock
     CustomerService customerService;
     @InjectMocks
@@ -42,7 +42,7 @@ class CustomerControllerTest {
         CustomerDTO customerDTO2 = new CustomerDTO();
         Mockito.when(customerService.getAllCustomers()).thenReturn(Arrays.asList(customerDTO1, customerDTO2));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customers")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/customers/")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.customers", Matchers.hasSize(2)));
@@ -64,5 +64,25 @@ class CustomerControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.equalTo("Walter")));
 
         Mockito.verify(customerService).getCustomerById(ArgumentMatchers.anyLong());
+    }
+
+    @Test
+    void createNewCustomer() throws Exception {
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setLastName("White");
+        customerDTO.setFirstName("Walter");
+        CustomerDTO savedCustomerDTO = new CustomerDTO();
+        savedCustomerDTO.setLastName(customerDTO.getLastName());
+        savedCustomerDTO.setFirstName(customerDTO.getFirstName());
+        savedCustomerDTO.setCustomerUrl("/api/v1/customers/1");
+
+        Mockito.when(customerService.createNewCustomer(customerDTO)).thenReturn(savedCustomerDTO);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/customers/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customerDTO)))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.equalTo("Walter")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", Matchers.equalTo("White")));
     }
 }

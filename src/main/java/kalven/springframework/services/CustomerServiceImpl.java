@@ -2,6 +2,7 @@ package kalven.springframework.services;
 
 import kalven.springframework.api.v1.mapper.CustomerMapper;
 import kalven.springframework.api.v1.model.CustomerDTO;
+import kalven.springframework.domain.Customer;
 import kalven.springframework.repositories.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerRepository.findAll()
                 .stream()
                 .map(customer -> {
-                    CustomerDTO customerDTO = customerMapper.cutomerToCustomerDTO(customer);
+                    CustomerDTO customerDTO = customerMapper.customerToCustomerDTO(customer);
                     customerDTO.setCustomerUrl("/api/v1/customer" + customer.getId());
                     return customerDTO;
                 })
@@ -38,7 +39,19 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public CustomerDTO getCustomerById(Long id) {
         return customerRepository.findById(id)
-                .map(customerMapper::cutomerToCustomerDTO)
+                .map(customerMapper::customerToCustomerDTO)
                 .orElseThrow(RuntimeException::new);
+    }
+
+    @Override
+    public CustomerDTO createNewCustomer(CustomerDTO customerDTO) {
+        Customer customer = customerMapper.customerDtoToCustomer(customerDTO);
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        CustomerDTO savedCustomerDTO = customerMapper.customerToCustomerDTO(savedCustomer);
+
+        savedCustomerDTO.setCustomerUrl("/api/v1/customers/" + savedCustomer.getId());
+        return savedCustomerDTO;
     }
 }

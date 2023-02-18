@@ -3,7 +3,6 @@ package kalven.springframework.api.v1.mapper;
 import kalven.springframework.api.v1.model.CustomerDTO;
 import kalven.springframework.domain.Customer;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -14,5 +13,7 @@ import org.mapstruct.factory.Mappers;
 public interface CustomerMapper {
     CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
 //    @Mapping(source = "id", target = "id")
-    CustomerDTO cutomerToCustomerDTO(Customer customer);
+    CustomerDTO customerToCustomerDTO(Customer customer);
+
+    Customer customerDtoToCustomer(CustomerDTO customerDTO);
 }
