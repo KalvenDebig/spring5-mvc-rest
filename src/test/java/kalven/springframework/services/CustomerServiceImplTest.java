@@ -88,4 +88,10 @@ class CustomerServiceImplTest {
         assertEquals(customerDTO.getFirstName(), savedDTO.getFirstName());
         assertEquals("/api/v1/customers/1", savedDTO.getCustomerUrl());
     }
+
+    @Test
+    void deleteCustomer() {
+        customerRepository.deleteById(1L);
+        Mockito.verify(customerRepository).deleteById(ArgumentMatchers.anyLong());
+    }
 }

@@ -128,4 +128,11 @@ class CustomerControllerTest extends AbstractRestControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lastName", Matchers.equalTo("White")))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.customer_url", Matchers.equalTo("/api/v1/customers/1")));
     }
+    @Test
+    void deleteCustomer() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/customers/1")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+        Mockito.verify(customerService).deleteCustomer(ArgumentMatchers.anyLong());
+    }
 }
