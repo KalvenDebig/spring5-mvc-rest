@@ -53,7 +53,6 @@ public class CustomerController {
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public CustomerListDTO deleteById(@PathVariable Long id) {
-        customerService.deleteCustomer(id);
-        return new CustomerListDTO(customerService.getAllCustomers());
+        return new CustomerListDTO(customerService.deleteCustomer(id));
     }
 }

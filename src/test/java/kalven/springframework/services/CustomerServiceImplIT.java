@@ -1,11 +1,15 @@
 package kalven.springframework.services;
 
 import kalven.springframework.api.v1.mapper.CustomerMapper;
+import kalven.springframework.api.v1.mapper.VendorMapper;
 import kalven.springframework.api.v1.model.CustomerDTO;
+import kalven.springframework.api.v1.model.VendorDTO;
 import kalven.springframework.bootstrap.Bootstrap;
 import kalven.springframework.domain.Customer;
+import kalven.springframework.domain.Vendor;
 import kalven.springframework.repositories.CategoryRepository;
 import kalven.springframework.repositories.CustomerRepository;
+import kalven.springframework.repositories.VendorRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,15 +34,20 @@ class CustomerServiceImplIT {
     @Autowired
     CategoryRepository categoryRepository;
 
+    @Autowired
+    VendorRepository vendorRepository;
+
     CustomerService customerService;
+    VendorService vendorService;
     @BeforeEach
     void setUp() throws Exception {
         System.out.println("Loading Customer data");
         System.out.println(customerRepository.count());
 
-        Bootstrap bootstrap = new Bootstrap(categoryRepository, customerRepository);
+        Bootstrap bootstrap = new Bootstrap(categoryRepository, customerRepository, vendorRepository);
         bootstrap.run();
         customerService = new CustomerServiceImpl(CustomerMapper.INSTANCE, customerRepository);
+        vendorService = new VendorServiceImpl(vendorRepository, VendorMapper.INSTANCE);
     }
 
     @Test
@@ -83,6 +92,29 @@ class CustomerServiceImplIT {
         Optional<Customer> updatedCustomer = customerRepository.findById(id);
         assertNotNull(updatedCustomer);
         assertEquals(updatedLastName, updatedCustomer.get().getFirstName());
+    }
+
+    @Test
+    void patchVendorUpdateName() {
+        String updatedName = "Arsenal";
+        Long id = getVendorId();
+        Optional<Vendor> originalVendor = vendorRepository.findById(id);
+        assertNotNull(originalVendor);
+        if (!originalVendor.isPresent()) {
+            System.out.println("Vendor is not found");
+            return;
+        }
+        VendorDTO vendorDTO = new VendorDTO();
+        vendorDTO.setName(updatedName);
+        vendorService.patchVendor(id, vendorDTO);
+        Optional<Vendor> updatedVendor = vendorRepository.findById(id);
+        assertNotNull(updatedVendor);
+        assertEquals(updatedName, updatedVendor.get().getName());
+    }
+
+    Long getVendorId() {
+        List<Vendor> list = vendorRepository.findAll();
+        return list.get(0).getId();
     }
 
     Long getId() {

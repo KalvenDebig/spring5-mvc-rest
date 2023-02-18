@@ -36,8 +36,8 @@ class CustomerServiceImplTest {
 
     @Test
     void getAllCustomers() {
-        List<Customer> customerDTOS = Arrays.asList(new Customer(), new Customer(), new Customer());
-        Mockito.when(customerRepository.findAll()).thenReturn(customerDTOS);
+        List<Customer> customer = Arrays.asList(new Customer(), new Customer(), new Customer());
+        Mockito.when(customerRepository.findAll()).thenReturn(customer);
         List<CustomerDTO> actual = customerService.getAllCustomers();
         assertEquals(3, actual.size());
     }
