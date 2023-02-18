@@ -2,8 +2,10 @@ package kalven.springframework.bootstrap;
 
 import kalven.springframework.domain.Category;
 import kalven.springframework.domain.Customer;
+import kalven.springframework.domain.Vendor;
 import kalven.springframework.repositories.CategoryRepository;
 import kalven.springframework.repositories.CustomerRepository;
+import kalven.springframework.repositories.VendorRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -15,15 +17,37 @@ import org.springframework.stereotype.Component;
 public class Bootstrap implements CommandLineRunner {
     private final CategoryRepository categoryRepository;
     private final CustomerRepository customerRepository;
-    public Bootstrap(CategoryRepository categoryRepository, CustomerRepository customerRepository) {
+    private final VendorRepository vendorRepository;
+    public Bootstrap(CategoryRepository categoryRepository, CustomerRepository customerRepository, VendorRepository vendorRepository) {
         this.categoryRepository = categoryRepository;
         this.customerRepository = customerRepository;
+        this.vendorRepository = vendorRepository;
     }
 
     @Override
     public void run(String... args) throws Exception {
         loadCustomers();
         loadCategories();
+        loadVendors();
+    }
+
+    private void loadVendors() {
+        Vendor bayer = new Vendor();
+        bayer.setName("Bayer");
+        Vendor milan = new Vendor();
+        milan.setName("Milan");
+        Vendor chelsea = new Vendor();
+        chelsea.setName("Chelsea");
+        Vendor realMadrid = new Vendor();
+        realMadrid.setName("realMadrid");
+
+        vendorRepository.save(bayer);
+        vendorRepository.save(milan);
+        vendorRepository.save(chelsea);
+        vendorRepository.save(chelsea);
+        vendorRepository.save(realMadrid);
+
+        System.out.println("Vendor Loaded: " + vendorRepository.count());
     }
 
     private void loadCategories() {
@@ -47,7 +71,7 @@ public class Bootstrap implements CommandLineRunner {
         categoryRepository.save(fish);
         categoryRepository.save(exotic);
         categoryRepository.save(nuts);
-        System.out.println("Data Loaded: " + categoryRepository.count());
+        System.out.println("Category Loaded: " + categoryRepository.count());
     }
 
     private void loadCustomers() {
