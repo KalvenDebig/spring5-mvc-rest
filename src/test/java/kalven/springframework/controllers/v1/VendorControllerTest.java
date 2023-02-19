@@ -48,7 +48,8 @@ class VendorControllerTest extends AbstractRestControllerTest {
                 .thenReturn(Arrays.asList(new VendorDTO(), new VendorDTO()));
 
         mockMvc.perform(MockMvcRequestBuilders.get(VendorController.BASE_URL)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.vendors", Matchers.hasSize(2)));
         Mockito.verify(vendorService).getAllVendors();
@@ -62,7 +63,8 @@ class VendorControllerTest extends AbstractRestControllerTest {
         Mockito.when(vendorService.getVendorById(ArgumentMatchers.anyLong())).thenReturn(vendorDTO);
 
         mockMvc.perform(MockMvcRequestBuilders.get(VendorController.BASE_URL + "/" + 1L)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.equalTo("Liverpool")));
 
@@ -79,6 +81,7 @@ class VendorControllerTest extends AbstractRestControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post(VendorController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                         .content(asJsonString(vendorDTO)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.equalTo("Man City")))
@@ -97,6 +100,7 @@ class VendorControllerTest extends AbstractRestControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.put(VendorController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(savedDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.equalTo("Man United")))
@@ -118,6 +122,7 @@ class VendorControllerTest extends AbstractRestControllerTest {
                 .thenReturn(savedDTO);
         mockMvc.perform(MockMvcRequestBuilders.patch(VendorController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(vendorDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.equalTo("Napoli")))

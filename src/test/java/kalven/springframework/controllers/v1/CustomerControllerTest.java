@@ -46,7 +46,8 @@ class CustomerControllerTest extends AbstractRestControllerTest {
         Mockito.when(customerService.getAllCustomers()).thenReturn(Arrays.asList(customerDTO1, customerDTO2));
 
         mockMvc.perform(MockMvcRequestBuilders.get(CustomerController.BASE_URL)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.customers", Matchers.hasSize(2)));
 
@@ -62,7 +63,8 @@ class CustomerControllerTest extends AbstractRestControllerTest {
         Mockito.when(customerService.getCustomerById(ArgumentMatchers.anyLong())).thenReturn(customerDTO);
 
         mockMvc.perform(MockMvcRequestBuilders.get(CustomerController.BASE_URL + "/1")
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.equalTo("Walter")));
 
@@ -83,6 +85,7 @@ class CustomerControllerTest extends AbstractRestControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post(CustomerController.BASE_URL)
                 .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customerDTO)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.equalTo("Walter")))
@@ -104,6 +107,7 @@ class CustomerControllerTest extends AbstractRestControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.put(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customerDTO)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.equalTo("Walter")))
@@ -125,6 +129,7 @@ class CustomerControllerTest extends AbstractRestControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.patch(CustomerController.BASE_URL + "/1")
                 .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customer)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.firstName", Matchers.equalTo("Walter")))
