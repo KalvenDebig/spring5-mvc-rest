@@ -13,22 +13,24 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @Project spring5-mvc-rest
  * @Author kalvens on 2/17/23
  */
-@ExtendWith(MockitoExtension.class)
+@AutoConfigureRestDocs
+@ExtendWith({MockitoExtension.class, RestDocumentationExtension.class})
 class CategoryControllerTest {
     @Mock
     CategoryService categoryService;
@@ -54,7 +56,7 @@ class CategoryControllerTest {
         List<CategoryDTO> categories = Arrays.asList(categoryDTO, categoryDTO2);
         Mockito.when(categoryService.getAllCategories()).thenReturn(categories);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(CategoryController.BASE_URL)
+        mockMvc.perform(RestDocumentationRequestBuilders.get(CategoryController.BASE_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -70,7 +72,7 @@ class CategoryControllerTest {
         Mockito.when(categoryService.getCategoryByName(ArgumentMatchers.anyString()))
                 .thenReturn(categoryDTO);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(CategoryController.BASE_URL + "/jim")
+        mockMvc.perform(RestDocumentationRequestBuilders.get(CategoryController.BASE_URL + "/jim")
                 .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -81,7 +83,7 @@ class CategoryControllerTest {
     void getByNameNotFound() throws Exception {
         Mockito.when(categoryService.getCategoryByName(ArgumentMatchers.anyString())).thenThrow(ResourceNotFoundException.class);
 
-        mockMvc.perform(MockMvcRequestBuilders.get(CategoryController.BASE_URL + "/asdf")
+        mockMvc.perform(RestDocumentationRequestBuilders.get(CategoryController.BASE_URL + "/asdf")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
